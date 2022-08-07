@@ -26,7 +26,18 @@ endif()
 # Enable Blend2D static build.
 
 #### Project definitions
-find_library(LIBOPENCV NAMES opencv_imgproc HINTS ${OPENCV_LIB_DIR} )
+find_library(LIBOPENCVCORE NAMES opencv_core HINTS ${OPENCV_LIB_DIR} )
+find_library(LIBOPENCVIMGPROC NAMES opencv_imgproc HINTS ${OPENCV_LIB_DIR} )
+find_library(LIBOPENCVFEATURES2D NAMES opencv_features2d HINTS ${OPENCV_LIB_DIR} )
+find_library(LIBOPENCVGAPI NAMES opencv_gapi HINTS ${OPENCV_LIB_DIR} )
+
+find_library(LIBOPENCV_IPPIW NAMES ippiw HINTS ${OPENCV_LIB_3RD_DIR} )
+find_library(LIBOPENCV_IPPICV NAMES ippicv HINTS ${OPENCV_LIB_3RD_DIR} )
+find_library(LIBOPENCV_ITTNOTIFY NAMES ittnotify HINTS ${OPENCV_LIB_3RD_DIR} )
+find_library(LIBOPENCV_ADE NAMES ade HINTS ${OPENCV_LIB_3RD_DIR} )
+find_library(LIBOPENCV_ZLIB NAMES zlib HINTS ${OPENCV_LIB_3RD_DIR} )
+find_library(LIB_ACCELERATE Accelerate)
+find_library(LIB_OPENCL OpenCL)
 
 add_library(opencv.hdll SHARED
 #src/hl-idl-helpers.cpp
@@ -64,6 +75,6 @@ endif (UNIX)
 
 set_property (TARGET opencv.hdll APPEND_STRING PROPERTY COMPILE_FLAGS )
  
-target_link_libraries(opencv.hdll ${LIBHL} ${LIBOPENCV})
+target_link_libraries(opencv.hdll ${LIBHL} ${LIBOPENCVIMGPROC} ${LIBOPENCVFEATURES2D} ${LIBOPENCVCORE} ${LIBOPENCV_IPPIW} ${LIBOPENCV_IPPICV} ${LIBOPENCV_ITTNOTIFY} ${LIBOPENCVGAPI} ${LIBOPENCV_ADE} ${LIBOPENCV_ZLIB} ${LIB_ACCELERATE} ${LIB_OPENCL})
 
 install(TARGETS opencv.hdll DESTINATION ${HDLL_DESTINATION})
