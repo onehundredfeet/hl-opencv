@@ -1,0 +1,11 @@
+{
+	"name" : "hl-opencv",
+	"url" : "https://github.com/onehundredfeet/hl-opencv",
+	"license" : "MIT",
+	"contributors" : ["onehundredfeet"],
+	"description" : "Limited support for opencv in Haxe/HL",
+	"version" : "0.1.0",
+	"releasenote" : "",
+	"classPath": ".",
+	"dependencies": { "hl-idl" : ""}
+}

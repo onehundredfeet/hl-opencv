@@ -1,0 +1,5 @@
+.vscode
+bin
+build.debug
+.DS_Store
+opencv.hdll
