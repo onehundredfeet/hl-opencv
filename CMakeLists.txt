@@ -7,9 +7,9 @@ set(APP_DIR "${CMAKE_CURRENT_LIST_DIR}"
 set(OPENCV_DIR "${APP_DIR}/ext/opencv"
     CACHE PATH "Location of 'opencv'")
 
-set(OPENCV_INC_DIR ${OPENCV_DIR}/lib.debug/include/opencv4)
-set(OPENCV_LIB_DIR ${OPENCV_DIR}/lib.debug/lib)
-set(OPENCV_LIB_3RD_DIR ${OPENCV_DIR}/lib.debug/lib/opencv4/3rdparty)
+set(OPENCV_INC_DIR installed/include/opencv4)
+set(OPENCV_LIB_DIR installed/lib)
+set(OPENCV_LIB_3RD_DIR installed/lib/opencv4/3rdparty)
 
 if (NOT HDLL_DESTINATION) 
     set(HDLL_DESTINATION "/usr/local/lib")

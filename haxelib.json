@@ -6,6 +6,6 @@
 	"description" : "Limited support for opencv in Haxe/HL",
 	"version" : "0.1.0",
 	"releasenote" : "",
-	"classPath": ".",
+	"classPath": "lib",
 	"dependencies": { "hl-idl" : ""}
 }

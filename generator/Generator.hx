@@ -21,7 +21,7 @@ class Generator {
 ";
 	
 	public static function generateCpp() {	
-		var options = { idlFile : "opencv/opencv.idl", nativeLib : "opencv", outputDir : "src", includeCode : INCLUDE, autoGC : true };
+		var options = { idlFile : "lib/opencv/opencv.idl", nativeLib : "opencv", outputDir : "src", includeCode : INCLUDE, autoGC : true };
 		webidl.Generate.generateCpp(options);
 	}
 

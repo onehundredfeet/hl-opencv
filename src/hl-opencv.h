@@ -1,5 +1,47 @@
+#define uchar cvuchar
 #include <opencv2/opencv.hpp>
+#undef uchar
 
+typedef int Format;
+
+
+class Contours {
+  public:
+      std::vector<std::vector<cv::Point> > _contours;
+    std::vector<cv::Vec4i> _hierarchy;
+
+    int length() {
+      return _contours.size();;
+    }
+    int points(int i ){
+      return _contours[i].size();
+    }
+
+    void getPoint(int i, int ptIdx, int *outpt){
+      auto &x = _contours[i][ptIdx];
+      outpt[0] = x.x;
+      outpt[1] = x.y;
+    }
+
+    void getHierarchy(int i, int ptIdx, int *outpt){
+      auto &x = _hierarchy[i];
+      outpt[0] = x[0];
+      outpt[1] = x[1];
+      outpt[2] = x[2];
+      outpt[3] = x[3];
+    }
+
+
+
+};
+
+inline void opencl_inRange3( cv::Mat &in, cv::Mat &out, float *lower, float *upper) {
+  cv::inRange( in, cv::Scalar(lower[0], lower[1], lower[2]), cv::Scalar(upper[0], upper[1], upper[2]), out);
+}
+
+inline Contours *opencl_find_contours( cv::Mat &in, cv::RetrievalModes retrival,cv::ContourApproximationModes approximation) {
+  return nullptr;
+}
 
 void contourTest() {
    cv::Mat src;
