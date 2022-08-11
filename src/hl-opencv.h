@@ -35,17 +35,40 @@ class Contours {
 
 };
 
+inline cv::Mat *opencl_mat_make_ref(int width, int height, int format, void *data, int stride) {
+  return new cv::Mat(width, height, format, data, stride);
+} 
+
 inline void opencl_inRange3( cv::Mat &in, cv::Mat &out, float *lower, float *upper) {
   cv::inRange( in, cv::Scalar(lower[0], lower[1], lower[2]), cv::Scalar(upper[0], upper[1], upper[2]), out);
 }
 
 inline Contours *opencl_find_contours( cv::Mat &in, cv::RetrievalModes retrival,cv::ContourApproximationModes approximation) {
-  return nullptr;
+
+  auto *c = new Contours();
+
+  cv::findContours(in, c->_contours, c->_hierarchy, retrival, approximation);
+  return c;
 }
 
+inline cv::Mat *opencl_mat_make_zeroes( int r, int c, int format ) {
+  auto *mp = new cv::Mat();
+  *mp = cv::Mat::zeros(r, c, format );
+  return mp;
+}
+
+
+inline void opencl_mat_zero( cv::Mat *m ) {
+  *m = cv::Mat::zeros(m->rows, m->cols, m->type() );
+}
+
+
+
+#if 0
 void contourTest() {
    cv::Mat src;
-   src.create(256, 256,  CV_8UC4);
+//   src.create(256, 256,  CV_8UC4);
+   src.zeros(256, 256, CV_8UC4);
   cv::Mat src_gray;
   cv::Mat src_hsv;
   int thresh = 100;
@@ -81,3 +104,4 @@ void contourTest() {
   cv::findContours( thresholded, contours, hierarchy, cv::RETR_TREE, cv::CHAIN_APPROX_SIMPLE );
 
 }
+#endif

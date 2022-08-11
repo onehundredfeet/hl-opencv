@@ -415,6 +415,21 @@ HL_PRIM void HL_NAME(Matrix_threshold4)(_ref(cv::Mat)* _this, _ref(cv::Mat)* out
 }
 DEFINE_PRIM(_VOID, Matrix_threshold4, _IDL _IDL _F64 _F64 _I32);
 
+HL_PRIM _ref(cv::Mat)* HL_NAME(Matrix_makeReference5)(int width, int height, int format, vbyte* data, int step) {
+	return alloc_ref((opencl_mat_make_ref(width, height, Format__values[format], data, step)),Matrix);
+}
+DEFINE_PRIM(_IDL, Matrix_makeReference5, _I32 _I32 _I32 _BYTES _I32);
+
+HL_PRIM _ref(cv::Mat)* HL_NAME(Matrix_makeZeros3)(int rows, int columns, int format) {
+	return alloc_ref((opencl_mat_make_zeroes(rows, columns, Format__values[format])),Matrix);
+}
+DEFINE_PRIM(_IDL, Matrix_makeZeros3, _I32 _I32 _I32);
+
+HL_PRIM void HL_NAME(Matrix_zero0)(_ref(cv::Mat)* _this) {
+	(opencl_mat_zero( _unref(_this) ));
+}
+DEFINE_PRIM(_VOID, Matrix_zero0, _IDL);
+
 HL_PRIM _ref(Contours)* HL_NAME(Matrix_findContours2)(_ref(cv::Mat)* _this, int retrival, int approximation) {
 	return alloc_ref((opencl_find_contours( *_unref(_this) , RetrievalModes__values[retrival], ContourApproximationModes__values[approximation])),Contours);
 }

@@ -10,8 +10,8 @@ import opencv.Native;
 
 class Test {
 	public static function main() {
-		var src = new Matrix();
-		src.create(256, 256, CV_8UC4);
+		var src = Matrix.makeZeros(256, 256, CV_8UC4);
+//		src.create(256, 256, CV_8UC4);
 		var src_gray = new Matrix();
 		var src_hsv = new Matrix();
 		var thresh = 100;
@@ -56,5 +56,6 @@ class Test {
             }
         }
 
+        trace('done number of contours ${numContours}');
 	}
 }

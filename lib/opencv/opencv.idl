@@ -364,8 +364,11 @@ interface Matrix {
     [CObjectRef, Internal="opencl_inRange3"] void inRange3( [Deref] Matrix out, float3 lower, float3 upper);
     [CObjectRef, Internal="cv::threshold"] void threshold( [Deref] Matrix out, double threshold, double max, ThresholdTypes thresholdType);
 
-    //std::vector<std::vector<cv::Point> > contours;
-    //std::vector<cv::Vec4i> hierarchy;
+
+    [Static, Internal="opencl_mat_make_ref"] Matrix makeReference( int width, int height,  Format format, bytes data, int step);
+    [Static, Internal="opencl_mat_make_zeroes"] Matrix makeZeros(int rows, int columns, Format format);
+    [CObject, Internal="opencl_mat_zero"] void zero();
+
 
     [CObjectRef, Internal="opencl_find_contours"] Contours findContours( RetrievalModes retrival,ContourApproximationModes approximation );
 
