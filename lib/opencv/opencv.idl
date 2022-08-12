@@ -369,7 +369,7 @@ interface Matrix {
     void Matrix();
     void create(int width, int height, Format format);
     [CObjectRef, Internal="cv::cvtColor"] void convertTo( [Deref] Matrix out, ColorConversionCodes conversion);
-    [CObjectRef, Internal="opencl_inRange3"] void inRange3( [Deref] Matrix out, float3 lower, float3 upper);
+    [CObjectRef, Internal="opencl_inRange"] void inRange( [Deref] Matrix out, float4 lower, float4 upper);
     [CObjectRef, Internal="cv::threshold"] void threshold( [Deref] Matrix out, double threshold, double max, ThresholdTypes thresholdType);
 
 
@@ -381,5 +381,7 @@ interface Matrix {
     [CObject, Internal="opencv_write_image"] void writeImage( String path );
 
     [CObjectRef, Internal="opencl_find_contours"] Contours findContours( RetrievalModes retrival,ContourApproximationModes approximation );
+    [CObjectRef, Internal="opencl_draw_contours"] void drawContours( Contours contours, int cidx, float4 colour, int thickness, LineTypes lineType, int maxLevel);
+
 };
 

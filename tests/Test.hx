@@ -41,6 +41,7 @@ class Test {
         src.writeImage( "out_2_polygon.png");
 
 		src.convertTo(src_gray, COLOR_BGR2GRAY);
+        src_gray.writeImage( "out_3_grey.png");
 		var thresholded = new Matrix();
 
 		// Convert from BGR to HSV colorspace
@@ -55,10 +56,12 @@ class Test {
 		var high_S = max_value;
 		var high_V = max_value;
 
-		var lower = new Vec3(low_H, low_S, low_V);
-		var higher = new Vec3(high_H, high_S, high_V);
-		src_hsv.inRange3(src_threshold, lower, higher);
-
+		var lower = new Vec4(low_H, low_S, low_V, 0);
+		var higher = new Vec4(max_value, max_value, max_value, 255);
+		src_hsv.inRange(src_threshold, lower, higher);
+        src_threshold.writeImage("out_5_in_hsv_range.png");
+		src.inRange(src_threshold, lower, higher);
+        src.writeImage("out_5_in_rgba_range.png");
 		/* 0: Binary
 			1: Binary Inverted
 			2: Threshold Truncated
@@ -81,5 +84,10 @@ class Test {
         }
 
         trace('done number of contours ${numContours}');
+
+        var contourImage = Matrix.makeZeros(256, 256, CV_8UC4);
+        contourImage.drawContours(contours, -1, new Vec4(255, 255, 255, 255), 1, LINE_8, 255 );
+        contourImage.writeImage( "out_4_contours.png");
+
 	}
 }

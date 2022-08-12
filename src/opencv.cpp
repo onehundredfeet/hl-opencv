@@ -418,10 +418,10 @@ HL_PRIM void HL_NAME(Matrix_convertTo2)(_ref(cv::Mat)* _this, _ref(cv::Mat)* out
 }
 DEFINE_PRIM(_VOID, Matrix_convertTo2, _IDL _IDL _I32);
 
-HL_PRIM void HL_NAME(Matrix_inRange33)(_ref(cv::Mat)* _this, _ref(cv::Mat)* out, _hl_float3* lower, _hl_float3* upper) {
-	(opencl_inRange3( *_unref(_this) , *_unref_ptr_safe(out), (float*)lower, (float*)upper));
+HL_PRIM void HL_NAME(Matrix_inRange3)(_ref(cv::Mat)* _this, _ref(cv::Mat)* out, _hl_float4* lower, _hl_float4* upper) {
+	(opencl_inRange( *_unref(_this) , *_unref_ptr_safe(out), (float*)lower, (float*)upper));
 }
-DEFINE_PRIM(_VOID, Matrix_inRange33, _IDL _IDL _STRUCT _STRUCT);
+DEFINE_PRIM(_VOID, Matrix_inRange3, _IDL _IDL _STRUCT _STRUCT);
 
 HL_PRIM void HL_NAME(Matrix_threshold4)(_ref(cv::Mat)* _this, _ref(cv::Mat)* out, double threshold, double max, int thresholdType) {
 	(cv::threshold( *_unref(_this) , *_unref_ptr_safe(out), threshold, max, ThresholdTypes__values[thresholdType]));
@@ -463,5 +463,10 @@ HL_PRIM _ref(Contours)* HL_NAME(Matrix_findContours2)(_ref(cv::Mat)* _this, int 
 	return alloc_ref((opencl_find_contours( *_unref(_this) , RetrievalModes__values[retrival], ContourApproximationModes__values[approximation])),Contours);
 }
 DEFINE_PRIM(_IDL, Matrix_findContours2, _IDL _I32 _I32);
+
+HL_PRIM void HL_NAME(Matrix_drawContours6)(_ref(cv::Mat)* _this, _ref(Contours)* contours, int cidx, _hl_float4* colour, int thickness, int lineType, int maxLevel) {
+	(opencl_draw_contours( *_unref(_this) , _unref_ptr_safe(contours), cidx, (float*)colour, thickness, LineTypes__values[lineType], maxLevel));
+}
+DEFINE_PRIM(_VOID, Matrix_drawContours6, _IDL _IDL _I32 _STRUCT _I32 _I32 _I32);
 
 }

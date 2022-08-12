@@ -40,8 +40,8 @@ inline cv::Mat *opencl_mat_make_ref(int width, int height, int format, void *dat
   return new cv::Mat(width, height, format, data, stride);
 } 
 
-inline void opencl_inRange3( cv::Mat &in, cv::Mat &out, float *lower, float *upper) {
-  cv::inRange( in, cv::Scalar(lower[0], lower[1], lower[2]), cv::Scalar(upper[0], upper[1], upper[2]), out);
+inline void opencl_inRange( cv::Mat &in, cv::Mat &out, float *lower, float *upper) {
+  cv::inRange( in, cv::Scalar(lower[0], lower[1], lower[2], lower[3]), cv::Scalar(upper[0], upper[1], upper[2], lower[3]), out);
 }
 
 inline Contours *opencl_find_contours( cv::Mat &in, cv::RetrievalModes retrival,cv::ContourApproximationModes approximation) {
@@ -50,6 +50,13 @@ inline Contours *opencl_find_contours( cv::Mat &in, cv::RetrievalModes retrival,
 
   cv::findContours(in, c->_contours, c->_hierarchy, retrival, approximation);
   return c;
+}
+
+inline void opencl_draw_contours( cv::Mat &out, Contours *contours, int cidx, float *colour, int thickness, cv::LineTypes lineType, int maxLevel) {
+
+  auto col = cv::Scalar((u_int8_t)colour[0], (u_int8_t)colour[1], (u_int8_t)colour[2], (u_int8_t)colour[3]);
+
+  cv::drawContours(out, contours->_contours, cidx, col, thickness, lineType, contours->_hierarchy, maxLevel);
 }
 
 inline cv::Mat *opencv_mat_make_zeroes( int r, int c, int format ) {
