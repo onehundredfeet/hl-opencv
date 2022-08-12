@@ -1,8 +1,11 @@
 package;
 
+import hvector.Vec2Array;
+import hl.NativeArray;
 import hvector.Int2;
 import hvector.Int4;
 import hvector.Vec3;
+import hvector.Int2Array;
 import hvector.Vec4;
 import hvector.Float3;
 import hl.Bytes;
@@ -20,6 +23,22 @@ class Test {
 
         src.circle( new Int2(128, 128), 20, new Vec4(127, 127, 127, 255), -1, FILLED );
         src.writeImage( "out_1_circle.png");
+
+
+
+        src.circle( new Int2(128, 128), 20, new Vec4(127, 127, 127, 255), -1, FILLED );
+        src.writeImage( "out_1_circle.png");
+
+        var pointArray = Int2Array.allocate( 4 );
+
+        pointArray[0] = new Int2( 10, 10);
+        pointArray[1] = new Int2( 80, 10);
+        pointArray[2] = new Int2( 80, 80);
+        pointArray[3] = new Int2( 10, 80);
+
+        src.fillPoly(pointArray, 4, new Vec4(64, 64, 64, 255), LINE_8);
+
+        src.writeImage( "out_2_polygon.png");
 
 		src.convertTo(src_gray, COLOR_BGR2GRAY);
 		var thresholded = new Matrix();

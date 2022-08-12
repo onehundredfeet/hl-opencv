@@ -79,7 +79,7 @@ inline void opencv_circle(cv::Mat *m, int *p, int radius, float *colour, int thi
   }
 }
 
-inline void opencv_fill_poly(cv::Mat *m, int *points, int numPoints, float *colour, cv::LineTypes lineType ) {
+inline void opencv_fill_poly(cv::Mat *m, _hl_int2 *points, int numPoints, float *colour, cv::LineTypes lineType ) {
    auto d = m->depth();
   switch(d) {
     case CV_8U: cv::fillPoly(*m,(const cv::Point **)&points, &numPoints, 1,  cv::Scalar((u_int8_t)colour[0], (u_int8_t)colour[1], (u_int8_t)colour[2], (u_int8_t)colour[3]), lineType ); break;

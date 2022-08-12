@@ -448,6 +448,11 @@ HL_PRIM void HL_NAME(Matrix_circle5)(_ref(cv::Mat)* _this, _hl_int2* point, int 
 }
 DEFINE_PRIM(_VOID, Matrix_circle5, _IDL _STRUCT _I32 _STRUCT _I32 _I32);
 
+HL_PRIM void HL_NAME(Matrix_fillPoly4)(_ref(cv::Mat)* _this, varray* points, int numpoints, _hl_float4* colour, int lineType) {
+	(opencv_fill_poly( _unref(_this) , hl_aptr(points,_hl_int2), numpoints, (float*)colour, LineTypes__values[lineType]));
+}
+DEFINE_PRIM(_VOID, Matrix_fillPoly4, _IDL _ARR _I32 _STRUCT _I32);
+
 HL_PRIM void HL_NAME(Matrix_writeImage1)(_ref(cv::Mat)* _this, vstring * path) {
 	const char* path__cstr = (path == nullptr) ? "" : hl_to_utf8( path->bytes ); // Should be garbage collected
 	(opencv_write_image( _unref(_this) , path__cstr));
