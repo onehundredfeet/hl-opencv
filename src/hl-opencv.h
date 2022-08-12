@@ -40,8 +40,11 @@ inline cv::Mat *opencl_mat_make_ref(int width, int height, int format, void *dat
   return new cv::Mat(width, height, format, data, stride);
 } 
 
+inline cv::Scalar float4ToScalar8U( float *v) {
+  return cv::Scalar((uint8_t)(v[0] + 0.5f), (uint8_t)(v[1] + 0.5f), (uint8_t)(v[2] + 0.5f), (uint8_t)(v[3] + 0.5f));
+}
 inline void opencl_inRange( cv::Mat &in, cv::Mat &out, float *lower, float *upper) {
-  cv::inRange( in, cv::Scalar(lower[0], lower[1], lower[2], lower[3]), cv::Scalar(upper[0], upper[1], upper[2], lower[3]), out);
+  cv::inRange( in, float4ToScalar8U(lower), float4ToScalar8U(upper), out);
 }
 
 inline Contours *opencl_find_contours( cv::Mat &in, cv::RetrievalModes retrival,cv::ContourApproximationModes approximation) {
