@@ -3,6 +3,7 @@ package;
 import hvector.Int2;
 import hvector.Int4;
 import hvector.Vec3;
+import hvector.Vec4;
 import hvector.Float3;
 import hl.Bytes;
 import format.png.Writer;
@@ -11,10 +12,14 @@ import opencv.Native;
 class Test {
 	public static function main() {
 		var src = Matrix.makeZeros(256, 256, CV_8UC4);
+        src.writeImage( "out_0_blank.png");
 //		src.create(256, 256, CV_8UC4);
 		var src_gray = new Matrix();
 		var src_hsv = new Matrix();
 		var thresh = 100;
+
+        src.circle( new Int2(128, 128), 20, new Vec4(127, 127, 127, 255), -1, FILLED );
+        src.writeImage( "out_1_circle.png");
 
 		src.convertTo(src_gray, COLOR_BGR2GRAY);
 		var thresholded = new Matrix();

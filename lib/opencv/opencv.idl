@@ -349,6 +349,14 @@ enum ContourApproximationModes {
     "CHAIN_APPROX_TC89_KCOS"
 };
 
+[Internal="cv::LineTypes", Prefix="cv::"]
+enum LineTypes {
+    "FILLED",
+    "LINE_4",
+    "LINE_8",
+    "LINE_AA"
+};
+
 interface Contours {
     int length();
     int points(int i );
@@ -366,8 +374,11 @@ interface Matrix {
 
 
     [Static, Internal="opencl_mat_make_ref"] Matrix makeReference( int width, int height,  Format format, bytes data, int step);
-    [Static, Internal="opencl_mat_make_zeroes"] Matrix makeZeros(int rows, int columns, Format format);
-    [CObject, Internal="opencl_mat_zero"] void zero();
+    [Static, Internal="opencv_mat_make_zeroes"] Matrix makeZeros(int rows, int columns, Format format);
+    [CObject, Internal="opencv_mat_zero"] void zero();
+    [CObject, Internal="opencv_circle"] void circle( int2 point, int radius, float4 colour, int thickness, LineTypes lineType );
+    //[CObject, Internal="opencv_fill_poly"] void fillPoly( int2 * points, int numpoints, float4 colour,  LineTypes lineType );
+    [CObject, Internal="opencv_write_image"] void writeImage( String path );
 
 
     [CObjectRef, Internal="opencl_find_contours"] Contours findContours( RetrievalModes retrival,ContourApproximationModes approximation );

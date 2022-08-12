@@ -360,6 +360,19 @@ HL_PRIM int HL_NAME(ContourApproximationModes_valueToIndex0)( int value ) {
 	for( int i = 0; i < 4; i++ ) if ( value == (int)ContourApproximationModes__values[i]) return i; return -1;
 }
 DEFINE_PRIM(_I32, ContourApproximationModes_valueToIndex0, _I32);
+static cv::LineTypes LineTypes__values[] = { cv::FILLED,cv::LINE_4,cv::LINE_8,cv::LINE_AA };
+HL_PRIM int HL_NAME(LineTypes_toValue0)( int idx ) {
+	return LineTypes__values[idx];
+}
+DEFINE_PRIM(_I32, LineTypes_toValue0, _I32);
+HL_PRIM int HL_NAME(LineTypes_indexToValue0)( int idx ) {
+	return LineTypes__values[idx];
+}
+DEFINE_PRIM(_I32, LineTypes_indexToValue0, _I32);
+HL_PRIM int HL_NAME(LineTypes_valueToIndex0)( int value ) {
+	for( int i = 0; i < 4; i++ ) if ( value == (int)LineTypes__values[i]) return i; return -1;
+}
+DEFINE_PRIM(_I32, LineTypes_valueToIndex0, _I32);
 static void finalize_Contours( _ref(Contours)* _this ) { free_ref(_this ); }
 HL_PRIM void HL_NAME(Contours_delete)( _ref(Contours)* _this ) {
 	free_ref(_this );
@@ -421,14 +434,25 @@ HL_PRIM _ref(cv::Mat)* HL_NAME(Matrix_makeReference5)(int width, int height, int
 DEFINE_PRIM(_IDL, Matrix_makeReference5, _I32 _I32 _I32 _BYTES _I32);
 
 HL_PRIM _ref(cv::Mat)* HL_NAME(Matrix_makeZeros3)(int rows, int columns, int format) {
-	return alloc_ref((opencl_mat_make_zeroes(rows, columns, Format__values[format])),Matrix);
+	return alloc_ref((opencv_mat_make_zeroes(rows, columns, Format__values[format])),Matrix);
 }
 DEFINE_PRIM(_IDL, Matrix_makeZeros3, _I32 _I32 _I32);
 
 HL_PRIM void HL_NAME(Matrix_zero0)(_ref(cv::Mat)* _this) {
-	(opencl_mat_zero( _unref(_this) ));
+	(opencv_mat_zero( _unref(_this) ));
 }
 DEFINE_PRIM(_VOID, Matrix_zero0, _IDL);
+
+HL_PRIM void HL_NAME(Matrix_circle5)(_ref(cv::Mat)* _this, _hl_int2* point, int radius, _hl_float4* colour, int thickness, int lineType) {
+	(opencv_circle( _unref(_this) , (int*)point, radius, (float*)colour, thickness, LineTypes__values[lineType]));
+}
+DEFINE_PRIM(_VOID, Matrix_circle5, _IDL _STRUCT _I32 _STRUCT _I32 _I32);
+
+HL_PRIM void HL_NAME(Matrix_writeImage1)(_ref(cv::Mat)* _this, vstring * path) {
+	const char* path__cstr = (path == nullptr) ? "" : hl_to_utf8( path->bytes ); // Should be garbage collected
+	(opencv_write_image( _unref(_this) , path__cstr));
+}
+DEFINE_PRIM(_VOID, Matrix_writeImage1, _IDL _STRING);
 
 HL_PRIM _ref(Contours)* HL_NAME(Matrix_findContours2)(_ref(cv::Mat)* _this, int retrival, int approximation) {
 	return alloc_ref((opencl_find_contours( *_unref(_this) , RetrievalModes__values[retrival], ContourApproximationModes__values[approximation])),Contours);

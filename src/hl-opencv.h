@@ -1,5 +1,6 @@
 #define uchar cvuchar
 #include <opencv2/opencv.hpp>
+#include <opencv2/imgcodecs.hpp>
 #undef uchar
 
 typedef int Format;
@@ -51,18 +52,60 @@ inline Contours *opencl_find_contours( cv::Mat &in, cv::RetrievalModes retrival,
   return c;
 }
 
-inline cv::Mat *opencl_mat_make_zeroes( int r, int c, int format ) {
+inline cv::Mat *opencv_mat_make_zeroes( int r, int c, int format ) {
   auto *mp = new cv::Mat();
   *mp = cv::Mat::zeros(r, c, format );
   return mp;
 }
 
 
-inline void opencl_mat_zero( cv::Mat *m ) {
+inline void opencv_mat_zero( cv::Mat *m ) {
   *m = cv::Mat::zeros(m->rows, m->cols, m->type() );
 }
 
+inline void opencv_circle(cv::Mat *m, int *p, int radius, float *colour, int thickness, cv::LineTypes lineType) {
+  cv::Point center;
+  center.x = p[0];
+  center.y = p[1];
+  
+  auto d = m->depth();
+  switch(d) {
+    case CV_8U: cv::circle(*m, center, radius, cv::Scalar((u_int8_t)colour[0], (u_int8_t)colour[1], (u_int8_t)colour[2], (u_int8_t)colour[3]), thickness, lineType ); break;
+    case CV_16U: cv::circle(*m, center, radius, cv::Scalar((u_int16_t)colour[0], (u_int16_t)colour[1], (u_int16_t)colour[2], (u_int16_t)colour[3]), thickness, lineType ); break;
+    case CV_32F: cv::circle(*m, center, radius, cv::Scalar((float)colour[0], (float)colour[1], (float)colour[2], (float)colour[3]), thickness, lineType ); break;
+    default: 
+    cv::circle(*m, center, radius, cv::Scalar((u_int8_t)colour[0], (u_int8_t)colour[1], (u_int8_t)colour[2], (u_int8_t)colour[3]), thickness, lineType ); break;
+    break;
+  }
+}
 
+inline void opencv_fill_poly(cv::Mat *m, int *points, int numPoints, float *colour, cv::LineTypes lineType ) {
+   auto d = m->depth();
+  switch(d) {
+    case CV_8U: cv::fillPoly(*m,(const cv::Point **)&points, &numPoints, 1,  cv::Scalar((u_int8_t)colour[0], (u_int8_t)colour[1], (u_int8_t)colour[2], (u_int8_t)colour[3]), lineType ); break;
+    case CV_16U: cv::fillPoly(*m,(const cv::Point **)&points, &numPoints, 1, cv::Scalar((u_int16_t)colour[0], (u_int16_t)colour[1], (u_int16_t)colour[2], (u_int16_t)colour[3]), lineType ); break;
+    case CV_32F: cv::fillPoly(*m,(const cv::Point **)&points, &numPoints, 1,   cv::Scalar((float)colour[0], (float)colour[1], (float)colour[2], (float)colour[3]), lineType ); break;
+    default: 
+      cv::fillPoly(*m,(const cv::Point **)&points, &numPoints, 1,  cv::Scalar((u_int8_t)colour[0], (u_int8_t)colour[1], (u_int8_t)colour[2], (u_int8_t)colour[3]), lineType ); break;    break;
+  }
+
+}
+
+inline void opencv_write_image(cv::Mat *m, const char *path ) {
+    bool result = false;
+    try
+    {
+        result = cv::imwrite(path, *m);
+    }
+    catch (const cv::Exception& ex)
+    {
+        fprintf(stderr, "Exception converting image to format: %s\n", ex.what());
+    }
+    if (result)
+        printf("Saved PNG file with alpha data.\n");
+    else
+        printf("ERROR: Can't save PNG file.\n");
+}
 
 #if 0
 void contourTest() {

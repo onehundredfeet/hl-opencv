@@ -4,3 +4,6 @@ build.debug
 .DS_Store
 opencv.hdll
 installed
+out_1_circle.png
+out_0_blank.png
+out.png
