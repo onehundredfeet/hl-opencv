@@ -2,6 +2,7 @@
 #include <opencv2/opencv.hpp>
 #include <opencv2/imgcodecs.hpp>
 #undef uchar
+#include "hl-idl-helpers.hpp"
 
 typedef int Format;
 
@@ -18,18 +19,18 @@ class Contours {
       return _contours[i].size();
     }
 
-    void getPoint(int i, int ptIdx, int *outpt){
+    void getPoint(int i, int ptIdx, _hl_int2 *outpt){
       auto &x = _contours[i][ptIdx];
-      outpt[0] = x.x;
-      outpt[1] = x.y;
+      outpt->x = x.x;
+      outpt->y = x.y;
     }
 
-    void getHierarchy(int i, int ptIdx, int *outpt){
+    void getHierarchy(int i,  _hl_int4 *outpt){
       auto &x = _hierarchy[i];
-      outpt[0] = x[0];
-      outpt[1] = x[1];
-      outpt[2] = x[2];
-      outpt[3] = x[3];
+      outpt->x = x[0];
+      outpt->y = x[1];
+      outpt->z = x[2];
+      outpt->w = x[3];
     }
 
 
@@ -40,10 +41,14 @@ inline cv::Mat *opencl_mat_make_ref(int width, int height, int format, void *dat
   return new cv::Mat(width, height, format, data, stride);
 } 
 
-inline cv::Scalar float4ToScalar8U( float *v) {
-  return cv::Scalar((uint8_t)(v[0] + 0.5f), (uint8_t)(v[1] + 0.5f), (uint8_t)(v[2] + 0.5f), (uint8_t)(v[3] + 0.5f));
+inline cv::Scalar float4ToScalar8U( _hl_float4 *v) {
+  return cv::Scalar((uint8_t)(v->x + 0.5f), (uint8_t)(v->y + 0.5f), (uint8_t)(v->z + 0.5f), (uint8_t)(v->w + 0.5f));
 }
-inline void opencl_inRange( cv::Mat &in, cv::Mat &out, float *lower, float *upper) {
+inline cv::Scalar float4ToScalar16U( _hl_float4 *v) {
+  return cv::Scalar((uint16_t)(v->x + 0.5f), (uint16_t)(v->y + 0.5f), (uint16_t)(v->z + 0.5f), (uint16_t)(v->w + 0.5f));
+}
+
+inline void opencl_inRange( cv::Mat &in, cv::Mat &out, _hl_float4 *lower, _hl_float4 *upper) {
   cv::inRange( in, float4ToScalar8U(lower), float4ToScalar8U(upper), out);
 }
 
@@ -55,9 +60,9 @@ inline Contours *opencl_find_contours( cv::Mat &in, cv::RetrievalModes retrival,
   return c;
 }
 
-inline void opencl_draw_contours( cv::Mat &out, Contours *contours, int cidx, float *colour, int thickness, cv::LineTypes lineType, int maxLevel) {
+inline void opencl_draw_contours( cv::Mat &out, Contours *contours, int cidx, _hl_float4 *colour, int thickness, cv::LineTypes lineType, int maxLevel) {
 
-  auto col = cv::Scalar((u_int8_t)colour[0], (u_int8_t)colour[1], (u_int8_t)colour[2], (u_int8_t)colour[3]);
+  auto col = float4ToScalar8U(colour);
 
   cv::drawContours(out, contours->_contours, cidx, col, thickness, lineType, contours->_hierarchy, maxLevel);
 }
@@ -73,30 +78,30 @@ inline void opencv_mat_zero( cv::Mat *m ) {
   *m = cv::Mat::zeros(m->rows, m->cols, m->type() );
 }
 
-inline void opencv_circle(cv::Mat *m, int *p, int radius, float *colour, int thickness, cv::LineTypes lineType) {
+inline void opencv_circle(cv::Mat *m, _hl_int2 *p, int radius, _hl_float4 *colour, int thickness, cv::LineTypes lineType) {
   cv::Point center;
-  center.x = p[0];
-  center.y = p[1];
+  center.x = p->x;
+  center.y = p->y;
   
   auto d = m->depth();
   switch(d) {
-    case CV_8U: cv::circle(*m, center, radius, cv::Scalar((u_int8_t)colour[0], (u_int8_t)colour[1], (u_int8_t)colour[2], (u_int8_t)colour[3]), thickness, lineType ); break;
-    case CV_16U: cv::circle(*m, center, radius, cv::Scalar((u_int16_t)colour[0], (u_int16_t)colour[1], (u_int16_t)colour[2], (u_int16_t)colour[3]), thickness, lineType ); break;
-    case CV_32F: cv::circle(*m, center, radius, cv::Scalar((float)colour[0], (float)colour[1], (float)colour[2], (float)colour[3]), thickness, lineType ); break;
+    case CV_8U: cv::circle(*m, center, radius, float4ToScalar8U(colour), thickness, lineType ); break;
+    case CV_16U: cv::circle(*m, center, radius, float4ToScalar16U(colour), thickness, lineType ); break;
+    case CV_32F: cv::circle(*m, center, radius, cv::Scalar(colour->x, colour->y, colour->z, colour->w), thickness, lineType ); break;
     default: 
-    cv::circle(*m, center, radius, cv::Scalar((u_int8_t)colour[0], (u_int8_t)colour[1], (u_int8_t)colour[2], (u_int8_t)colour[3]), thickness, lineType ); break;
+    cv::circle(*m, center, radius, float4ToScalar8U(colour), thickness, lineType ); break;
     break;
   }
 }
 
-inline void opencv_fill_poly(cv::Mat *m, _hl_int2 *points, int numPoints, float *colour, cv::LineTypes lineType ) {
+inline void opencv_fill_poly(cv::Mat *m, _hl_int2 *points, int numPoints, _hl_float4 *colour, cv::LineTypes lineType ) {
    auto d = m->depth();
   switch(d) {
-    case CV_8U: cv::fillPoly(*m,(const cv::Point **)&points, &numPoints, 1,  cv::Scalar((u_int8_t)colour[0], (u_int8_t)colour[1], (u_int8_t)colour[2], (u_int8_t)colour[3]), lineType ); break;
-    case CV_16U: cv::fillPoly(*m,(const cv::Point **)&points, &numPoints, 1, cv::Scalar((u_int16_t)colour[0], (u_int16_t)colour[1], (u_int16_t)colour[2], (u_int16_t)colour[3]), lineType ); break;
-    case CV_32F: cv::fillPoly(*m,(const cv::Point **)&points, &numPoints, 1,   cv::Scalar((float)colour[0], (float)colour[1], (float)colour[2], (float)colour[3]), lineType ); break;
+    case CV_8U: cv::fillPoly(*m,(const cv::Point **)&points, &numPoints, 1,  float4ToScalar8U(colour), lineType ); break;
+    case CV_16U: cv::fillPoly(*m,(const cv::Point **)&points, &numPoints, 1, float4ToScalar16U(colour), lineType ); break;
+    case CV_32F: cv::fillPoly(*m,(const cv::Point **)&points, &numPoints, 1,   cv::Scalar(colour->x, colour->y, colour->z, colour->w), lineType ); break;
     default: 
-      cv::fillPoly(*m,(const cv::Point **)&points, &numPoints, 1,  cv::Scalar((u_int8_t)colour[0], (u_int8_t)colour[1], (u_int8_t)colour[2], (u_int8_t)colour[3]), lineType ); break;    break;
+      cv::fillPoly(*m,(const cv::Point **)&points, &numPoints, 1,  float4ToScalar8U(colour), lineType ); break; 
   }
 
 }

@@ -17,10 +17,12 @@
 
 #define HL_NAME(x) opencv_##x
 #include <hl.h>
-
+#include "hl-idl-helpers.hpp"
 // Need to link in helpers
-HL_API hl_type hltx_ui16;
-HL_API hl_type hltx_ui8;
+//HL_API hl_type hltx_ui16;
+//HL_API hl_type hltx_ui8;
+HL_PRIM hl_type hltx_ui16 = { HUI16 };
+HL_PRIM hl_type hltx_ui8 = { HUI8 };
 
 #define _IDL _BYTES
 #define _OPT(t) vdynamic *
@@ -50,63 +52,6 @@ template<typename T> void free_ref( pref<T> *r, void (*deleteFunc)(T*) ) {
 	r->value = NULL;
 	r->finalize = NULL;
 }
-
-// Float vector
-struct _hl_float2 {
-	float x;
-	float y;
-};
-
-struct _hl_float3 {
-	float x;
-	float y;
-	float z;
-};
-
-struct _hl_float4 {
-	float x;
-	float y;
-	float z;
-	float w;
-};
-
-// int vector
-struct _hl_int2 {
-	int x;
-	int y;
-};
-
-struct _hl_int3 {
-	int x;
-	int y;
-	int z;
-};
-
-struct _hl_int4 {
-	int x;
-	int y;
-	int z;
-	int w;
-};
-
-// double vector
-struct _hl_double2 {
-	double x;
-	double y;
-};
-
-struct _hl_double3 {
-	double x;
-	double y;
-	double z;
-};
-
-struct _hl_double4 {
-	double x;
-	double y;
-	double z;
-	double w;
-};
 
 inline void testvector(_hl_float3 *v) {
   printf("v: %f %f %f\n", v->x, v->y, v->z);
@@ -373,99 +318,99 @@ HL_PRIM int HL_NAME(LineTypes_valueToIndex0)( int value ) {
 	for( int i = 0; i < 4; i++ ) if ( value == (int)LineTypes__values[i]) return i; return -1;
 }
 DEFINE_PRIM(_I32, LineTypes_valueToIndex0, _I32);
-static void finalize_Contours( _ref(Contours)* _this ) { free_ref(_this ); }
-HL_PRIM void HL_NAME(Contours_delete)( _ref(Contours)* _this ) {
+static void finalize_Contours( pref<Contours>* _this ) { free_ref(_this ); }
+HL_PRIM void HL_NAME(Contours_delete)( pref<Contours>* _this ) {
 	free_ref(_this );
 }
 DEFINE_PRIM(_VOID, Contours_delete, _IDL);
-static void finalize_Matrix( _ref(cv::Mat)* _this ) { free_ref(_this ); }
-HL_PRIM void HL_NAME(Matrix_delete)( _ref(cv::Mat)* _this ) {
+static void finalize_Matrix( pref<cv::Mat>* _this ) { free_ref(_this ); }
+HL_PRIM void HL_NAME(Matrix_delete)( pref<cv::Mat>* _this ) {
 	free_ref(_this );
 }
 DEFINE_PRIM(_VOID, Matrix_delete, _IDL);
-HL_PRIM int HL_NAME(Contours_length0)(_ref(Contours)* _this) {
+HL_PRIM int HL_NAME(Contours_length0)(pref<Contours>* _this) {
 	return (_unref(_this)->length());
 }
 DEFINE_PRIM(_I32, Contours_length0, _IDL);
 
-HL_PRIM int HL_NAME(Contours_points1)(_ref(Contours)* _this, int i) {
+HL_PRIM int HL_NAME(Contours_points1)(pref<Contours>* _this, int i) {
 	return (_unref(_this)->points(i));
 }
 DEFINE_PRIM(_I32, Contours_points1, _IDL _I32);
 
-HL_PRIM void HL_NAME(Contours_getPoint3)(_ref(Contours)* _this, int i, int ptidx, _hl_int2* out) {
-	(_unref(_this)->getPoint(i, ptidx, (int*)out));
+HL_PRIM void HL_NAME(Contours_getPoint3)(pref<Contours>* _this, int i, int ptidx, _hl_int2* out) {
+	(_unref(_this)->getPoint(i, ptidx, (_hl_int2*)out));
 }
 DEFINE_PRIM(_VOID, Contours_getPoint3, _IDL _I32 _I32 _STRUCT);
 
-HL_PRIM void HL_NAME(Contours_getHierarchy3)(_ref(Contours)* _this, int i, int ptidx, _hl_int4* out) {
-	(_unref(_this)->getHierarchy(i, ptidx, (int*)out));
+HL_PRIM void HL_NAME(Contours_getHierarchy2)(pref<Contours>* _this, int i, _hl_int4* out) {
+	(_unref(_this)->getHierarchy(i, (_hl_int4*)out));
 }
-DEFINE_PRIM(_VOID, Contours_getHierarchy3, _IDL _I32 _I32 _STRUCT);
+DEFINE_PRIM(_VOID, Contours_getHierarchy2, _IDL _I32 _STRUCT);
 
-HL_PRIM _ref(cv::Mat)* HL_NAME(Matrix_new0)() {
+HL_PRIM pref<cv::Mat>* HL_NAME(Matrix_new0)() {
 	return alloc_ref((new cv::Mat()),Matrix);
 }
 DEFINE_PRIM(_IDL, Matrix_new0,);
 
-HL_PRIM void HL_NAME(Matrix_create3)(_ref(cv::Mat)* _this, int width, int height, int format) {
+HL_PRIM void HL_NAME(Matrix_create3)(pref<cv::Mat>* _this, int width, int height, int format) {
 	(_unref(_this)->create(width, height, Format__values[format]));
 }
 DEFINE_PRIM(_VOID, Matrix_create3, _IDL _I32 _I32 _I32);
 
-HL_PRIM void HL_NAME(Matrix_convertTo2)(_ref(cv::Mat)* _this, _ref(cv::Mat)* out, int conversion) {
+HL_PRIM void HL_NAME(Matrix_convertTo2)(pref<cv::Mat>* _this, pref<cv::Mat>* out, int conversion) {
 	(cv::cvtColor( *_unref(_this) , *_unref_ptr_safe(out), ColorConversionCodes__values[conversion]));
 }
 DEFINE_PRIM(_VOID, Matrix_convertTo2, _IDL _IDL _I32);
 
-HL_PRIM void HL_NAME(Matrix_inRange3)(_ref(cv::Mat)* _this, _ref(cv::Mat)* out, _hl_float4* lower, _hl_float4* upper) {
-	(opencl_inRange( *_unref(_this) , *_unref_ptr_safe(out), (float*)lower, (float*)upper));
+HL_PRIM void HL_NAME(Matrix_inRange3)(pref<cv::Mat>* _this, pref<cv::Mat>* out, _hl_float4* lower, _hl_float4* upper) {
+	(opencl_inRange( *_unref(_this) , *_unref_ptr_safe(out), (_hl_float4*)lower, (_hl_float4*)upper));
 }
 DEFINE_PRIM(_VOID, Matrix_inRange3, _IDL _IDL _STRUCT _STRUCT);
 
-HL_PRIM void HL_NAME(Matrix_threshold4)(_ref(cv::Mat)* _this, _ref(cv::Mat)* out, double threshold, double max, int thresholdType) {
+HL_PRIM void HL_NAME(Matrix_threshold4)(pref<cv::Mat>* _this, pref<cv::Mat>* out, double threshold, double max, int thresholdType) {
 	(cv::threshold( *_unref(_this) , *_unref_ptr_safe(out), threshold, max, ThresholdTypes__values[thresholdType]));
 }
 DEFINE_PRIM(_VOID, Matrix_threshold4, _IDL _IDL _F64 _F64 _I32);
 
-HL_PRIM _ref(cv::Mat)* HL_NAME(Matrix_makeReference5)(int width, int height, int format, vbyte* data, int step) {
+HL_PRIM pref<cv::Mat>* HL_NAME(Matrix_makeReference5)(int width, int height, int format, vbyte* data, int step) {
 	return alloc_ref((opencl_mat_make_ref(width, height, Format__values[format], data, step)),Matrix);
 }
 DEFINE_PRIM(_IDL, Matrix_makeReference5, _I32 _I32 _I32 _BYTES _I32);
 
-HL_PRIM _ref(cv::Mat)* HL_NAME(Matrix_makeZeros3)(int rows, int columns, int format) {
+HL_PRIM pref<cv::Mat>* HL_NAME(Matrix_makeZeros3)(int rows, int columns, int format) {
 	return alloc_ref((opencv_mat_make_zeroes(rows, columns, Format__values[format])),Matrix);
 }
 DEFINE_PRIM(_IDL, Matrix_makeZeros3, _I32 _I32 _I32);
 
-HL_PRIM void HL_NAME(Matrix_zero0)(_ref(cv::Mat)* _this) {
+HL_PRIM void HL_NAME(Matrix_zero0)(pref<cv::Mat>* _this) {
 	(opencv_mat_zero( _unref(_this) ));
 }
 DEFINE_PRIM(_VOID, Matrix_zero0, _IDL);
 
-HL_PRIM void HL_NAME(Matrix_circle5)(_ref(cv::Mat)* _this, _hl_int2* point, int radius, _hl_float4* colour, int thickness, int lineType) {
-	(opencv_circle( _unref(_this) , (int*)point, radius, (float*)colour, thickness, LineTypes__values[lineType]));
+HL_PRIM void HL_NAME(Matrix_circle5)(pref<cv::Mat>* _this, _hl_int2* point, int radius, _hl_float4* colour, int thickness, int lineType) {
+	(opencv_circle( _unref(_this) , (_hl_int2*)point, radius, (_hl_float4*)colour, thickness, LineTypes__values[lineType]));
 }
 DEFINE_PRIM(_VOID, Matrix_circle5, _IDL _STRUCT _I32 _STRUCT _I32 _I32);
 
-HL_PRIM void HL_NAME(Matrix_fillPoly4)(_ref(cv::Mat)* _this, varray* points, int numpoints, _hl_float4* colour, int lineType) {
-	(opencv_fill_poly( _unref(_this) , hl_aptr(points,_hl_int2), numpoints, (float*)colour, LineTypes__values[lineType]));
+HL_PRIM void HL_NAME(Matrix_fillPoly4)(pref<cv::Mat>* _this, varray* points, int numpoints, _hl_float4* colour, int lineType) {
+	(opencv_fill_poly( _unref(_this) , hl_aptr(points,_hl_int2), numpoints, (_hl_float4*)colour, LineTypes__values[lineType]));
 }
 DEFINE_PRIM(_VOID, Matrix_fillPoly4, _IDL _ARR _I32 _STRUCT _I32);
 
-HL_PRIM void HL_NAME(Matrix_writeImage1)(_ref(cv::Mat)* _this, vstring * path) {
+HL_PRIM void HL_NAME(Matrix_writeImage1)(pref<cv::Mat>* _this, vstring * path) {
 	const char* path__cstr = (path == nullptr) ? "" : hl_to_utf8( path->bytes ); // Should be garbage collected
 	(opencv_write_image( _unref(_this) , path__cstr));
 }
 DEFINE_PRIM(_VOID, Matrix_writeImage1, _IDL _STRING);
 
-HL_PRIM _ref(Contours)* HL_NAME(Matrix_findContours2)(_ref(cv::Mat)* _this, int retrival, int approximation) {
+HL_PRIM pref<Contours>* HL_NAME(Matrix_findContours2)(pref<cv::Mat>* _this, int retrival, int approximation) {
 	return alloc_ref((opencl_find_contours( *_unref(_this) , RetrievalModes__values[retrival], ContourApproximationModes__values[approximation])),Contours);
 }
 DEFINE_PRIM(_IDL, Matrix_findContours2, _IDL _I32 _I32);
 
-HL_PRIM void HL_NAME(Matrix_drawContours6)(_ref(cv::Mat)* _this, _ref(Contours)* contours, int cidx, _hl_float4* colour, int thickness, int lineType, int maxLevel) {
-	(opencl_draw_contours( *_unref(_this) , _unref_ptr_safe(contours), cidx, (float*)colour, thickness, LineTypes__values[lineType], maxLevel));
+HL_PRIM void HL_NAME(Matrix_drawContours6)(pref<cv::Mat>* _this, pref<Contours>* contours, int cidx, _hl_float4* colour, int thickness, int lineType, int maxLevel) {
+	(opencl_draw_contours( *_unref(_this) , _unref_ptr_safe(contours), cidx, (_hl_float4*)colour, thickness, LineTypes__values[lineType], maxLevel));
 }
 DEFINE_PRIM(_VOID, Matrix_drawContours6, _IDL _IDL _I32 _STRUCT _I32 _I32 _I32);
 

@@ -361,7 +361,7 @@ interface Contours {
     int length();
     int points(int i );
     void getPoint(int i, int ptidx, int2 out);
-    void getHierarchy(int i, int ptidx, int4 out);
+    void getHierarchy(int i,  int4 out);
 };
 
 [Internal="cv::Mat"]
