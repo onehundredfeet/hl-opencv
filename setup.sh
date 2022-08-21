@@ -23,18 +23,3 @@ cmake -GNinja -DCMAKE_BUILD_TYPE=${CONFIG} ../../..
 ninja install
 popd
 
-#BASEDIR=$(dirname $0)
-#pushd ext/mirage/ext/oniguruma
-#autoreconf -vfi 
-#./configure  --prefix="${PWD}/../../../../installed.debug"
-#make install
-#popd
-
-
-
-#mkdir -p build.debug/hl-mirage
-
-#pushd build.debug/hl-mirage
-#cmake -GNinja -DCMAKE_INSTALL_PREFIX=../../installed.debug ../..
-#ninja install
-#popd
